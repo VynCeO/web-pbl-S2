@@ -41,7 +41,6 @@
         </div>
 
         <div class="menu"><a href="#service">Service</a></div>
-        <div class="menu"><a href="#laporan">Laporan Keuangan</a></div>
         <div class="menu"><a href="#kontak">Kontak</a></div>
 
         <div class="btn-masuk" onclick="goToLogin()">Masuk</div>
@@ -87,7 +86,14 @@
           <form id="reservasiForm">
             <input type="text" id="nama" placeholder="Nama" required />
             <input type="text" id="phone" placeholder="No. HP" required />
+            <label>Tanggal Mulai Sewa</label>
             <input type="date" id="tanggal" required />
+            <label>Tanggal Pengembalian</label>
+            <input type="date" id="tanggal_kembali" required />
+            <div id="bookedDates" style="font-size: 12px; color: #666; margin-top: 8px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
+              <strong>Tanggal yang sudah dipesan:</strong>
+              <div id="bookedDatesList">Memuat data...</div>
+            </div>
             <select id="layanan" required>
               <option>Pilih Layanan</option>
               <option>Sewa GOR</option>
@@ -102,15 +108,6 @@
         <div class="reservasi-gambar">
           <img src="../assets/images/reservasi.jpg" alt="Reservasi" />
         </div>
-      </div>
-    </section>
-
-    <!-- Laporan Keuangan -->
-    <section class="laporan reveal" id="laporan">
-      <h2>Laporan Keuangan</h2>
-      <div class="laporan-container" id="laporanContainer">
-        <!-- Data akan dimuat dari API -->
-        <div style="text-align: center; padding: 20px; width: 100%;">Memuat data...</div>
       </div>
     </section>
 
