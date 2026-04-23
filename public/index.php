@@ -16,7 +16,7 @@
     <!-- Navbar -->
     <div class="navbar">
       <div class="nav-left">
-        <img src="../assets/images/logo.png" alt="Logo" width="40">
+        <img src="https://ui-avatars.com/api/?name=BUMDES+Sugihwaras&background=1f5b3a&color=fff&size=40" alt="Logo" width="40" style="border-radius: 50%;">
         <b>BUMDES</b>
       </div>
 
