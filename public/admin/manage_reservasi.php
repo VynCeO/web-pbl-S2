@@ -370,7 +370,8 @@ if ($result->num_rows > 0) {
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>No. HP</th>
-                                <th>Tanggal</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Kembali</th>
                                 <th>Unit Usaha</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -386,6 +387,7 @@ if ($result->num_rows > 0) {
                                     echo "<td>" . htmlspecialchars($item['nama']) . "</td>";
                                     echo "<td><a href='tel:" . htmlspecialchars($item['no_hp']) . "'>" . htmlspecialchars($item['no_hp']) . "</a></td>";
                                     echo "<td>" . date('d M Y', strtotime($item['tanggal'])) . "</td>";
+                                    echo "<td>" . (isset($item['tanggal_kembali']) && $item['tanggal_kembali'] ? date('d M Y', strtotime($item['tanggal_kembali'])) : '-') . "</td>";
                                     echo "<td>" . htmlspecialchars($item['unit_nama']) . "</td>";
                                     echo "<td><span class='status-badge $status_class'>" . ucfirst($item['status']) . "</span></td>";
                                     echo "<td>";

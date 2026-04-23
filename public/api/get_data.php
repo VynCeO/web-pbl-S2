@@ -55,10 +55,11 @@ switch ($action) {
             $nama = sanitize($_POST['nama'] ?? '');
             $no_hp = sanitize($_POST['no_hp'] ?? '');
             $tanggal = sanitize($_POST['tanggal'] ?? '');
+            $tanggal_kembali = sanitize($_POST['tanggal_kembali'] ?? '');
             $unit_id = (int)($_POST['unit_usaha_id'] ?? 0);
             $keterangan = sanitize($_POST['keterangan'] ?? '');
 
-            if (empty($nama) || empty($no_hp) || empty($tanggal) || $unit_id <= 0) {
+            if (empty($nama) || empty($no_hp) || empty($tanggal) || empty($tanggal_kembali) || $unit_id <= 0) {
                 $response = ['success' => false, 'message' => 'Data tidak lengkap'];
                 break;
             }
@@ -79,6 +80,7 @@ switch ($action) {
                 'nama' => $nama,
                 'no_hp' => $no_hp,
                 'tanggal' => $tanggal,
+                'tanggal_kembali' => $tanggal_kembali,
                 'unit_usaha_id' => $unit_id,
                 'keterangan' => $keterangan
             ];

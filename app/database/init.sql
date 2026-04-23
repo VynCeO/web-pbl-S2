@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS reservasi (
     nama VARCHAR(100) NOT NULL,
     no_hp VARCHAR(15) NOT NULL,
     tanggal DATE NOT NULL,
+    tanggal_kembali DATE,
     unit_usaha_id INT NOT NULL,
     keterangan TEXT,
     status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
