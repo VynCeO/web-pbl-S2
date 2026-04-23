@@ -122,6 +122,9 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             --secondary-color: #ff9500;
             --light-bg: #f5f5f5;
             --danger-color: #f44336;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
         }
 
         body {

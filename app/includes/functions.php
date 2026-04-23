@@ -192,7 +192,24 @@ function get_flash() {
 
 // Redirect
 function redirect($url) {
-    header("Location: " . BASE_URL . $url);
+    // Handle different redirect scenarios
+    if (strpos($url, 'http') === 0) {
+        // Absolute URL
+        header("Location: " . $url);
+    } elseif (strpos($url, '/') === 0) {
+        // Absolute path from web root
+        // For paths like /admin/index.php, prepend /public if needed
+        if (strpos($url, '/public/') === false && strpos($url, '/admin') === 0) {
+            $url = '/public' . $url;
+        } elseif (strpos($url, '/public/') === false && strpos($url, '/api') === 0) {
+            $url = '/public' . $url;
+        }
+        header("Location: " . $url);
+    } else {
+        // Relative path - remove leading ./
+        $url = ltrim($url, './');
+        header("Location: " . $url);
+    }
     exit;
 }
 
