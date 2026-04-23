@@ -22,8 +22,13 @@ try {
     die("Database Error: " . $e->getMessage());
 }
 
-// Define base URL
-define('BASE_URL', 'http://localhost:8000');
+// Define base URL - PERHATIAN: Sesuaikan dengan URL Anda di Laragon
+// Jika mengakses http://localhost/web-pbl-S2/, gunakan line di bawah ini
+define('BASE_URL', 'http://localhost/web-pbl-S2');
+
+// Jika mengakses http://web-pbl-s2.test/ (virtual host), gunakan:
+// define('BASE_URL', 'http://web-pbl-s2.test');
+
 define('SITE_NAME', 'BUMDes Sukses Bersama');
 
 // Error handling

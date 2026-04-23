@@ -1,1 +1,7 @@
 app/database/dummy_data.sql
+admin/index_backup.php
+INDEX_PERUBAHAN.md
+QUICK_START.md
+REFACTOR_GUIDE_v2.md
+START_HERE.md
+app/database/migration_v2.sql

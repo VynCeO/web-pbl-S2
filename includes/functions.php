@@ -190,9 +190,18 @@ function get_flash() {
     return null;
 }
 
-// Redirect
+// Redirect - FIXED VERSION
 function redirect($url) {
-    header("Location: " . BASE_URL . $url);
+    // Hapus leading slash jika ada
+    $url = ltrim($url, '/');
+    
+    // Jika url sudah mengandung base_url, gunakan sebagaimana adanya
+    if (strpos($url, 'http') === 0) {
+        header("Location: " . $url);
+    } else {
+        // Tambahkan BASE_URL dengan separator slash
+        header("Location: " . BASE_URL . '/' . $url);
+    }
     exit;
 }
 
