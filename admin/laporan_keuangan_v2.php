@@ -14,7 +14,7 @@ if (!is_logged_in()) {
     redirect('/admin/login.php');
 }
 
-define('UPLOAD_DIR', '../../assets/uploads/laporan/');
+define('UPLOAD_DIR', '../assets/uploads/laporan/');
 
 // Variables
 $page_title = 'Laporan Keuangan v2';

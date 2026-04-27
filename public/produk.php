@@ -166,46 +166,6 @@
         background: #1e3a0f;
       }
 
-      .detail-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .detail-title {
-        font-size: 1.8rem;
-        color: #2d5016;
-        margin-bottom: 1rem;
-        border-bottom: 3px solid #ff9500;
-        padding-bottom: 0.5rem;
-      }
-
-      .detail-content {
-        color: #555;
-        line-height: 1.8;
-      }
-
-      .detail-list {
-        list-style: none;
-        padding: 0;
-      }
-
-      .detail-list li {
-        padding: 0.75rem 0;
-        padding-left: 1.5rem;
-        position: relative;
-      }
-
-      .detail-list li:before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: #ff9500;
-        font-weight: bold;
-      }
-
       @media (max-width: 768px) {
         .produk-grid {
           grid-template-columns: 1fr;
@@ -284,9 +244,6 @@
         <div class="produk-grid" id="produkContainer">
           <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #999;">Memuat data produk...</div>
         </div>
-
-        <!-- Detail Sections -->
-        <div id="detailSections"></div>
       </div>
     </div>
 
@@ -308,7 +265,7 @@
         window.location.href = '/admin/login.php';
       }
 
-      // Load unit usaha dengan detail
+      // Load unit usaha
       function loadUnitUsaha(filter = 'ALL') {
         currentFilter = filter;
         const filterBtns = document.querySelectorAll('.filter-btn');
@@ -324,7 +281,6 @@
           .then(data => {
             allProducts = data;
             displayProducts(filter);
-            displayDetailSections(data, filter);
           })
           .catch(err => {
             console.error('Error loading products:', err);
@@ -333,7 +289,7 @@
           });
       }
 
-      // Display produk
+      // Display produk (simplified - no toggle)
       function displayProducts(filter) {
         const container = document.getElementById('produkContainer');
         
@@ -364,14 +320,11 @@
                 
                 ${variasi ? `
                   <div class="produk-variasi">
-                    <div class="variasi-title">Pilihan Tersedia:</div>
-                    ${product.variasi.slice(0, 3).map(v => `
-                      <div class="variasi-item">
-                        <span>${v.nama}</span>
-                        <span style="color: #ff9500; font-weight: bold;">Rp ${parseInt(v.harga).toLocaleString('id-ID')}</span>
-                      </div>
-                    `).join('')}
-                    ${product.variasi.length > 3 ? `<div style="text-align: center; color: #999; font-size: 0.8rem; padding-top: 0.5rem;">+${product.variasi.length - 3} lainnya</div>` : ''}
+                    <div class="variasi-title">💰 Harga Mulai:</div>
+                    <div style="padding: 8px 0; color: #ff9500; font-weight: bold; font-size: 1.1rem;">
+                      Rp ${minPrice.toLocaleString('id-ID')}
+                    </div>
+                    ${product.variasi.length > 0 ? `<div style="text-align: center; color: #999; font-size: 0.8rem;">${product.variasi.length} pilihan tersedia</div>` : ''}
                   </div>
                 ` : ''}
 
@@ -383,41 +336,6 @@
             </div>
           `;
         }).join('');
-      }
-
-      // Display detail sections
-      function displayDetailSections(data, filter) {
-        const container = document.getElementById('detailSections');
-        const filtered = filter === 'ALL' 
-          ? data 
-          : data.filter(p => p.nama.includes(filter));
-
-        if (filtered.length === 0) return;
-
-        container.innerHTML = filtered.slice(0, 3).map(product => `
-          <div class="detail-section" id="${product.nama.replace(/\s+/g, '')}">
-            <h2 class="detail-title">📌 ${product.nama}</h2>
-            <div class="detail-content">
-              <p><strong>Deskripsi:</strong></p>
-              <p>${product.deskripsi || 'Produk unggulan dari BUMDes Sukses Bersama'}</p>
-              
-              ${product.variasi && product.variasi.length > 0 ? `
-                <p style="margin-top: 1rem;"><strong>Pilihan Harga:</strong></p>
-                <ul class="detail-list">
-                  ${product.variasi.map(v => `
-                    <li>${v.nama} - Rp ${parseInt(v.harga).toLocaleString('id-ID')}</li>
-                  `).join('')}
-                </ul>
-              ` : ''}
-
-              <p style="margin-top: 1.5rem;">
-                <button class="produk-btn" onclick="goToReservasi()" style="padding: 0.75rem 1.5rem; font-size: 1rem;">
-                  Pesan Sekarang
-                </button>
-              </p>
-            </div>
-          </div>
-        `).join('');
       }
 
       function filterUnit(type) {
