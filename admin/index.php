@@ -1,12 +1,12 @@
 <?php
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+require_once '../app/config/database.php';
+require_once '../app/includes/functions.php';
 
 start_session();
 
 // Check if user is logged in
 if (!is_logged_in()) {
-    redirect('admin/login.php');
+    redirect('/admin/login.php');
 }
 
 // Get total data counts
@@ -484,6 +484,7 @@ $flash = get_flash();
                 <li><a href="<?php echo BASE_URL; ?>/admin/manage_unit.php">🏭 Unit Usaha</a></li>
                 <li><a href="<?php echo BASE_URL; ?>/admin/manage_reservasi.php">📅 Reservasi</a></li>
                 <li><a href="<?php echo BASE_URL; ?>/admin/manage_kontak.php">📞 Kontak</a></li>
+                <li><a href="<?php echo BASE_URL; ?>/admin/laporan_keuangan_v2.php">💰 Laporan Keuangan</a></li>
                 <li style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
                     <a href="<?php echo BASE_URL; ?>/admin/logout.php">🚪 Logout</a>
                 </li>

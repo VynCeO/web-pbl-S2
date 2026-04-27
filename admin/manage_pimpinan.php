@@ -1,12 +1,21 @@
 <?php
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+/**
+ * Manajemen Pimpinan v2.0
+ * - Support upload foto
+ * - Optimized dengan functions_v2.php
+ */
+
+require_once '../app/config/database.php';
+require_once '../app/includes/functions_v2.php';
 
 start_session();
 
 if (!is_logged_in()) {
     redirect('/admin/login.php');
 }
+
+// Constants
+define('UPLOAD_DIR', '../../assets/images/');
 
 // Handle actions
 $action = isset($_GET['action']) ? sanitize($_GET['action']) : '';
@@ -32,23 +41,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 'urutan' => $urutan
             ];
             
+            // Handle photo upload
+            if (!empty($_FILES['foto']['name'])) {
+                $old_foto = '';
+                if ($post_action === 'edit') {
+                    $edit_id = (int)($_POST['id'] ?? 0);
+                    $pimp_data = get_data_by_id($conn, 'pimpinan', $edit_id);
+                    $old_foto = $pimp_data['foto'] ?? '';
+                }
+                
+                $foto = replace_file($old_foto, $_FILES['foto'], ['jpg', 'jpeg', 'png', 'gif'], UPLOAD_DIR);
+                if ($foto) {
+                    $data['foto'] = $foto;
+                }
+            }
+            
             if ($post_action === 'add') {
                 if (insert_data($conn, 'pimpinan', $data)) {
                     set_flash('success', 'Data pimpinan berhasil ditambahkan');
                     redirect('/admin/manage_pimpinan.php');
+                } else {
+                    set_flash('error', 'Gagal menambahkan data pimpinan');
                 }
             } else {
                 $edit_id = (int)($_POST['id'] ?? 0);
                 if ($edit_id > 0 && update_data($conn, 'pimpinan', $data, $edit_id)) {
                     set_flash('success', 'Data pimpinan berhasil diperbarui');
                     redirect('/admin/manage_pimpinan.php');
+                } else {
+                    set_flash('error', 'Gagal memperbarui data pimpinan');
                 }
             }
         }
     } elseif ($post_action === 'delete') {
         $delete_id = (int)($_POST['id'] ?? 0);
-        if ($delete_id > 0 && delete_data($conn, 'pimpinan', $delete_id)) {
-            set_flash('success', 'Data pimpinan berhasil dihapus');
+        if ($delete_id > 0) {
+            // Delete photo file if exists
+            $pimp_data = get_data_by_id($conn, 'pimpinan', $delete_id);
+            if ($pimp_data && !empty($pimp_data['foto'])) {
+                delete_file($pimp_data['foto'], UPLOAD_DIR);
+            }
+            
+            if (delete_data($conn, 'pimpinan', $delete_id)) {
+                set_flash('success', 'Data pimpinan berhasil dihapus');
+            } else {
+                set_flash('error', 'Gagal menghapus data pimpinan');
+            }
             redirect('/admin/manage_pimpinan.php');
         }
     }
@@ -84,6 +122,9 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             --secondary-color: #ff9500;
             --light-bg: #f5f5f5;
             --danger-color: #f44336;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
         }
 
         body {
@@ -357,7 +398,7 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
                 <!-- Form -->
                 <div class="form-card">
                     <h2><?php echo $edit_mode ? 'Edit Pimpinan' : 'Tambah Pimpinan'; ?></h2>
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="<?php echo $edit_mode ? 'edit' : 'add'; ?>">
                         <?php if ($edit_mode): ?>
                             <input type="hidden" name="id" value="<?php echo $pimpinan['id']; ?>">
@@ -379,12 +420,25 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
                         </div>
 
                         <div class="form-group">
+                            <label for="foto">Foto</label>
+                            <input type="file" id="foto" name="foto" accept="image/*" onchange="previewImage(this)">
+                            <small>Format: JPG, JPEG, PNG, GIF. Ukuran maksimal: 5MB</small>
+                            <?php if ($edit_mode && !empty($pimpinan['foto']) && file_exists(UPLOAD_DIR . $pimpinan['foto'])): ?>
+                                <div style="margin-top: 1rem;">
+                                    <p style="margin-bottom: 0.5rem;"><strong>Foto saat ini:</strong></p>
+                                    <img src="<?php echo BASE_URL; ?>/assets/images/<?php echo htmlspecialchars($pimpinan['foto']); ?>" style="max-width: 120px; max-height: 120px; border-radius: 4px; border: 2px solid #ddd;">
+                                </div>
+                            <?php endif; ?>
+                            <div id="preview-container"></div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="urutan">Urutan</label>
                             <input type="number" id="urutan" name="urutan" value="<?php echo $edit_mode ? $pimpinan['urutan'] : '1'; ?>" min="1">
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" class="btn btn-primary">💾 Simpan</button>
                             <?php if ($edit_mode): ?>
                                 <a href="manage_pimpinan.php" class="btn btn-secondary">Batal</a>
                             <?php endif; ?>
@@ -417,11 +471,11 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
                                     echo "<td>" . $item['urutan'] . "</td>";
                                     echo "<td>";
                                     echo "<div class='action-buttons'>";
-                                    echo "<a href='?action=edit&id=" . $item['id'] . "' class='btn btn-secondary btn-sm'>Edit</a>";
+                                    echo "<a href='?action=edit&id=" . $item['id'] . "' class='btn btn-secondary btn-sm'>✏️ Edit</a>";
                                     echo "<form method='POST' style='display:inline;' onsubmit='return confirm(\"Yakin hapus?\");'>";
                                     echo "<input type='hidden' name='action' value='delete'>";
                                     echo "<input type='hidden' name='id' value='" . $item['id'] . "'>";
-                                    echo "<button type='submit' class='btn btn-danger btn-sm'>Hapus</button>";
+                                    echo "<button type='submit' class='btn btn-danger btn-sm'>🗑️ Hapus</button>";
                                     echo "</form>";
                                     echo "</div>";
                                     echo "</td>";
@@ -435,5 +489,22 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             </div>
         </div>
     </div>
+
+    <script>
+        // Image preview
+        function previewImage(input) {
+            const container = input.parentElement.querySelector('#preview-container') || document.getElementById('preview-container');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    container.innerHTML = '<div style="margin-top: 1rem;"><strong>Preview:</strong><br><img src="' + e.target.result + '" style="max-width: 150px; max-height: 150px; border-radius: 4px; border: 2px solid #ddd; margin-top: 0.5rem;"></div>';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+require_once '../app/config/database.php';
+require_once '../app/includes/functions.php';
 
 start_session();
 
@@ -68,6 +68,10 @@ $kontak = $result->num_rows > 0 ? $result->fetch_assoc() : null;
             --primary-color: #2d5016;
             --secondary-color: #ff9500;
             --light-bg: #f5f5f5;
+            --danger-color: #f44336;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
         }
 
         body {

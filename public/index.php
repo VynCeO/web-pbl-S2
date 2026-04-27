@@ -28,19 +28,19 @@
         <div class="menu"><a href="#home">Home</a></div>
 
         <div class="menu dropdown">
-          Unit Usaha
+          Produk
           <div class="dropdown-content">
-            <a href="#unit-usaha">Semua Layanan</a>
-            <a href="#" onclick="filterUnit('GOR')">GOR Sugihwaras</a>
-            <a href="#" onclick="filterUnit('Tenda')">Rental Tenda</a>
-            <a href="#" onclick="filterUnit('Air')">Air Minum</a>
-            <a href="#" onclick="filterUnit('Kopi')">Kopi Melek</a>
-            <a href="#" onclick="filterUnit('Ternak')">Peternakan</a>
-            <a href="#" onclick="filterUnit('PBB')">Pembayaran PBB</a>
+            <a href="produk.php">Semua Produk</a>
+            <a href="produk.php#GOR" onclick="filterUnit('GOR')">GOR Sugihwaras</a>
+            <a href="produk.php#Tenda" onclick="filterUnit('Tenda')">Rental Tenda</a>
+            <a href="produk.php#Air" onclick="filterUnit('Air')">Air Minum</a>
+            <a href="produk.php#Kopi" onclick="filterUnit('Kopi')">Kopi Melek</a>
+            <a href="produk.php#Ternak" onclick="filterUnit('Ternak')">Peternakan</a>
+            <a href="produk.php#PBB" onclick="filterUnit('PBB')">Pembayaran PBB</a>
           </div>
         </div>
 
-        <div class="menu"><a href="#service">Service</a></div>
+        <div class="menu"><a href="reservasi.php">Reservasi</a></div>
         <div class="menu"><a href="#kontak">Kontak</a></div>
 
         <div class="btn-masuk" onclick="goToLogin()">Masuk</div>
@@ -66,50 +66,9 @@
       </div>
     </section>
 
-    <!-- Unit Usaha -->
-    <section class="unit-usaha reveal" id="unit-usaha">
-      <h2>Unit Usaha Kami</h2>
-      <div class="usaha-container" id="unitContainer">
-        <!-- Data akan dimuat dari API -->
-        <div style="text-align: center; padding: 20px; width: 100%;">Memuat data...</div>
-      </div>
-    </section>
+    <!-- Unit Usaha Section Removed - Moved to produk.php -->
 
-    <!-- Reservasi -->
-    <section class="reservasi reveal" id="service">
-      <div class="reservasi-container">
-        <!-- FORM -->
-        <div class="reservasi-form">
-          <h2>Reservasi Online</h2>
-          <p>Pesan GOR & Tenda Dengan Mudah</p>
-
-          <form id="reservasiForm">
-            <input type="text" id="nama" placeholder="Nama" required />
-            <input type="text" id="phone" placeholder="No. HP" required />
-            <label>Tanggal Mulai Sewa</label>
-            <input type="date" id="tanggal" required />
-            <label>Tanggal Pengembalian</label>
-            <input type="date" id="tanggal_kembali" required />
-            <div id="bookedDates" style="font-size: 12px; color: #666; margin-top: 8px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
-              <strong>Tanggal yang sudah dipesan:</strong>
-              <div id="bookedDatesList">Memuat data...</div>
-            </div>
-            <select id="layanan" required>
-              <option>Pilih Layanan</option>
-              <option>Sewa GOR</option>
-              <option>Rental Tenda</option>
-            </select>
-            <button type="submit" class="btn-reserve">Pesan Sekarang</button>
-            <div id="reservasiResponse"></div>
-          </form>
-        </div>
-
-        <!-- GAMBAR -->
-        <div class="reservasi-gambar">
-          <img src="../assets/images/reservasi.jpg" alt="Reservasi" />
-        </div>
-      </div>
-    </section>
+    <!-- Reservasi Section Removed - Moved to reservasi.php -->
 
     <!-- Kontak -->
     <section class="kontak reveal" id="kontak">
@@ -164,13 +123,10 @@
       window.addEventListener("load", function(){
         document.getElementById("loader").style.display = "none";
         loadPimpinan();
-        loadUnitUsaha();
-        loadLaporan();
-        setupFormSubmission();
       });
 
       function goToLogin() {
-        window.location.href = '../admin/login.php';
+        window.location.href = '/admin/login.php';
       }
 
       function filterUnit(type) {

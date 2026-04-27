@@ -29,8 +29,17 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
+function formatRupiah(value) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
+}
+
 // ================================
-// API Calls
+// API Calls with Error Handling
 // ================================
 
 async function fetchData(action, params = {}) {
@@ -41,6 +50,7 @@ async function fetchData(action, params = {}) {
         }
 
         const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error('Fetch error:', error);
@@ -56,14 +66,19 @@ async function loadPimpinan() {
     try {
         const result = await fetchData('get_pimpinan');
         const container = document.getElementById('pimpinanContainer');
+        if (!container) return;
 
         if (result.success && result.data && result.data.length > 0) {
             container.innerHTML = result.data.map(pimpinan => `
                 <div class="card">
-                    <img src="${BASE_URL}assets/images/${pimpinan.foto || 'default-person.jpg'}" alt="${pimpinan.nama}" />
+                    <img 
+                        src="${BASE_URL}assets/images/${pimpinan.foto || 'default-person.jpg'}" 
+                        alt="${pimpinan.nama}" 
+                        onerror="this.src='${BASE_URL}assets/images/default-person.jpg'"
+                    />
                     <div class="card-nama">
                         <h3>${pimpinan.nama}</h3>
-                        <p>${pimpinan.posisi}</p>
+                        <p>${pimpinan.posisi || 'Staff'}</p>
                     </div>
                 </div>
             `).join('');
@@ -76,28 +91,50 @@ async function loadPimpinan() {
 }
 
 // ================================
-// Load Unit Usaha Data
+// Load Unit Usaha (For produk.php)
 // ================================
 
 async function loadUnitUsaha(filterType = null) {
     try {
         const result = await fetchData('get_unit_usaha');
         const container = document.getElementById('unitContainer');
+        if (!container) return;
 
         if (result.success && result.data && result.data.length > 0) {
             let data = result.data;
             
-            // Filter jika ada parameter
-            if (filterType) {
+            if (filterType && filterType !== 'ALL') {
                 data = data.filter(unit => unit.nama.includes(filterType));
             }
 
-            container.innerHTML = data.map(unit => `
-                <div class="usaha-card">
-                    <img src="${BASE_URL}assets/images/${unit.gambar || 'default-unit.png'}" alt="${unit.nama}" />
-                    <p>${unit.nama}</p>
+            container.innerHTML = data.length > 0 ? data.map(unit => `
+                <div class="usaha-card-wrapper" data-unit-id="${unit.id}">
+                    <div class="usaha-card" onclick="toggleVariasi(${unit.id})">
+                        <img 
+                            src="${BASE_URL}assets/images/${unit.gambar || 'default-unit.png'}" 
+                            alt="${unit.nama}"
+                            onerror="this.src='${BASE_URL}assets/images/default-unit.png'"
+                        />
+                        <div class="usaha-card-overlay">
+                            <div class="usaha-card-content">
+                                <p class="usaha-card-nama">${unit.nama}</p>
+                                <p class="usaha-card-hint">Lihat Variasi & Harga</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="variasi-panel" id="variasi-${unit.id}" style="display: none;">
+                        <div class="variasi-header">
+                            <h4>${unit.nama}</h4>
+                            <button class="variasi-close" onclick="toggleVariasi(${unit.id})">&times;</button>
+                        </div>
+                        <div class="variasi-list" id="variasi-list-${unit.id}">
+                            <p class="variasi-loading">Memuat variasi produk...</p>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
+            `).join('') : '<p style="text-align: center; padding: 20px; width: 100%;">Tidak ada unit usaha untuk kategori ini</p>';
+            
+            data.forEach(unit => loadVariasiProduk(unit.id));
         } else {
             container.innerHTML = '<p style="text-align: center; padding: 20px; width: 100%;">Belum ada unit usaha</p>';
         }
@@ -107,105 +144,50 @@ async function loadUnitUsaha(filterType = null) {
 }
 
 // ================================
-// Load Laporan Keuangan
+// Load Variasi Produk
 // ================================
 
-async function loadLaporan() {
+async function loadVariasiProduk(unitId) {
     try {
-        const result = await fetchData('get_kontak');
+        const result = await fetchData('get_variasi_produk', { unit_id: unitId });
+        const variasisList = document.getElementById(`variasi-list-${unitId}`);
+        if (!variasisList) return;
 
-        if (result.success && result.data) {
-            const container = document.getElementById('laporanContainer');
-            const data = result.data;
-
-            container.innerHTML = `
-                <div class="laporan-item">
-                    <h3>Informasi Perusahaan</h3>
-                    <p><strong>Alamat:</strong> ${data.alamat || '-'}</p>
-                    <p><strong>Telepon:</strong> ${data.telepon || '-'}</p>
-                    <p><strong>Email:</strong> ${data.email || '-'}</p>
+        if (result.success && result.data && result.data.length > 0) {
+            variasisList.innerHTML = result.data.map(variasi => `
+                <div class="variasi-item">
+                    <div class="variasi-nama">${variasi.nama}</div>
+                    <div class="variasi-harga">${formatRupiah(variasi.harga)}</div>
+                    ${variasi.keterangan ? `<div class="variasi-keterangan">${variasi.keterangan}</div>` : ''}
                 </div>
-            `;
+            `).join('');
+        } else {
+            variasisList.innerHTML = '<p style="text-align: center; padding: 10px;">Belum ada variasi produk</p>';
         }
     } catch (error) {
-        console.error('Error loading laporan:', error);
+        console.error('Error loading variasi:', error);
+        const variasisList = document.getElementById(`variasi-list-${unitId}`);
+        if (variasisList) {
+            variasisList.innerHTML = '<p style="text-align: center; padding: 10px; color: red;">Gagal memuat data</p>';
+        }
     }
 }
 
 // ================================
-// Form Submission
+// Toggle Variasi Panel
 // ================================
 
-function setupFormSubmission() {
-    const form = document.getElementById('reservasiForm');
-
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const data = {
-                nama: document.getElementById('nama').value,
-                no_hp: document.getElementById('phone').value,
-                tanggal: document.getElementById('tanggal').value,
-                layanan: document.getElementById('layanan').value,
-                keterangan: ''
-            };
-
-            // Validation
-            if (!data.nama || !data.no_hp || !data.tanggal || !data.layanan || data.layanan === 'Pilih Layanan') {
-                showMessage('reservasiResponse', 'Mohon isi semua field yang diperlukan', 'error');
-                return;
-            }
-
-            // Validate phone number
-            const phoneRegex = /^(\+62|0)[0-9]{9,12}$/;
-            if (!phoneRegex.test(data.no_hp.replace(/-/g, ''))) {
-                showMessage('reservasiResponse', 'Nomor telepon tidak valid', 'error');
-                return;
-            }
-
-            // Validate date
-            const selectedDate = new Date(data.tanggal);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (selectedDate < today) {
-                showMessage('reservasiResponse', 'Tanggal reservasi tidak boleh di masa lalu', 'error');
-                return;
-            }
-
-            try {
-                const formData = new FormData();
-                formData.append('nama', data.nama);
-                formData.append('no_hp', data.no_hp);
-                formData.append('tanggal', data.tanggal);
-                
-                // Map layanan name to unit_usaha_id
-                let unit_usaha_id = 1; // Default GOR
-                if (data.layanan.includes('Tenda')) {
-                    unit_usaha_id = 2;
-                }
-                formData.append('unit_usaha_id', unit_usaha_id);
-                formData.append('keterangan', data.keterangan);
-
-                const response = await fetch(`${API_BASE}?action=create_reservasi`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showMessage('reservasiResponse', result.message, 'success');
-                    form.reset();
-                } else {
-                    showMessage('reservasiResponse', result.message || 'Terjadi kesalahan', 'error');
-                }
-            } catch (error) {
-                console.error('Form submission error:', error);
-                showMessage('reservasiResponse', 'Terjadi kesalahan saat mengirim data', 'error');
-            }
-        });
+function toggleVariasi(unitId) {
+    const panel = document.getElementById(`variasi-${unitId}`);
+    if (!panel) return;
+    
+    const isHidden = panel.style.display === 'none';
+    document.querySelectorAll('.variasi-panel').forEach(p => {
+        p.style.display = 'none';
+    });
+    
+    if (isHidden) {
+        panel.style.display = 'block';
     }
 }
 
@@ -234,22 +216,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ================================
-// Initialization
+// Reveal Animation on Scroll
 // ================================
 
-window.addEventListener('load', function() {
-    const loader = document.getElementById('loader');
-    if (loader) {
-        loader.style.display = 'none';
-    }
-
-    loadPimpinan();
-    loadUnitUsaha();
-    loadLaporan();
-    setupFormSubmission();
-});
-
-// Reveal animation on scroll
 function reveal() {
     const reveals = document.querySelectorAll('.reveal');
     reveals.forEach(element => {
@@ -265,8 +234,20 @@ function reveal() {
 
 window.addEventListener('scroll', reveal);
 
-// Set minimum date for date input
+// ================================
+// Initialize on Page Load
+// ================================
+
 window.addEventListener('load', function() {
+    const loader = document.getElementById('loader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+
+    // Load pimpinan data (for landing page)
+    loadPimpinan();
+
+    // Set minimum date for date input (for reservasi page)
     const dateInput = document.getElementById('tanggal');
     if (dateInput) {
         const today = new Date();

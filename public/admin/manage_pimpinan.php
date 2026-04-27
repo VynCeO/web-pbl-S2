@@ -5,8 +5,8 @@
  * - Optimized dengan functions_v2.php
  */
 
-require_once '../../app/config/database.php';
-require_once '../../app/includes/functions_v2.php';
+require_once '../app/config/database.php';
+require_once '../app/includes/functions_v2.php';
 
 start_session();
 

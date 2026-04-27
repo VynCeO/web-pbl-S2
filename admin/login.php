@@ -1,12 +1,12 @@
 <?php
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+require_once '../app/config/database.php';
+require_once '../app/includes/functions.php';
 
 start_session();
 
 // Redirect if already logged in
 if (is_logged_in()) {
-    redirect('admin/index.php');
+    redirect('/admin/index.php');
 }
 
 $error = '';
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
                 $_SESSION['role'] = $user['role'];
 
-                redirect('admin/index.php');
+                redirect('/admin/index.php');
             } else {
                 $error = 'Username atau password salah';
             }

@@ -407,7 +407,13 @@ function get_flash() {
  * Redirect to URL
  */
 function redirect($url) {
-    header("Location: " . BASE_URL . $url);
+    // Absolute redirects
+    if (strpos($url, 'http') === 0 || strpos($url, '/') === 0) {
+        header("Location: " . $url);
+    } else {
+        // Relative redirects
+        header("Location: " . ltrim($url, './'));
+    }
     exit;
 }
 

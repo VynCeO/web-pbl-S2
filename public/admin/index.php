@@ -308,7 +308,7 @@ $flash = get_flash();
                 <li><a href="manage_unit.php">🏢 Unit Usaha</a></li>
                 <li><a href="manage_reservasi.php">📅 Reservasi</a></li>
                 <li><a href="manage_kontak.php">📞 Kontak</a></li>
-                <li><a href="laporan_keuangan.php">📊 Laporan Keuangan</a></li>
+                <li><a href="laporan_keuangan_v2.php">💰 Laporan Keuangan v2</a></li>
                 <li style="margin-top: 2rem;"><a href="logout.php">🚪 Logout</a></li>
             </ul>
         </div>

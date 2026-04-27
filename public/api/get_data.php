@@ -37,16 +37,30 @@ switch ($action) {
         }
         break;
 
+    case 'get_variasi_produk':
+        $unit_id = isset($_GET['unit_id']) ? (int)$_GET['unit_id'] : 0;
+        if ($unit_id > 0) {
+            $data = get_all_data($conn, 'variasi_produk', "unit_usaha_id = $unit_id AND status = 'aktif'", 'urutan ASC');
+            $response = [
+                'success' => true,
+                'message' => 'Data variasi produk berhasil diambil',
+                'data' => $data
+            ];
+        }
+        break;
+
     case 'get_kontak':
         $query = "SELECT * FROM kontak LIMIT 1";
         $result = $conn->query($query);
-        if ($result->num_rows > 0) {
+        if ($result && $result->num_rows > 0) {
             $data = $result->fetch_assoc();
             $response = [
                 'success' => true,
                 'message' => 'Data kontak berhasil diambil',
                 'data' => $data
             ];
+        } else {
+            $response = ['success' => false, 'message' => 'Data kontak tidak ditemukan'];
         }
         break;
 
