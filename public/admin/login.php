@@ -58,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #2d5016 0%, #1e3a0f 100%);
@@ -65,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         .login-container {
@@ -74,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             max-width: 400px;
             width: 100%;
+            animation: slideIn 0.5s ease;
         }
 
         .login-header {
@@ -84,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .login-header h1 {
             color: #2d5016;
             margin-bottom: 0.5rem;
+            font-size: 1.8rem;
         }
 
         .login-header p {
@@ -100,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 0.5rem;
             color: #333;
             font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .form-group input {
@@ -109,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 4px;
             font-size: 1rem;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .form-group input:focus {
@@ -119,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .login-btn {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #2d5016;
             color: white;
             border: none;
@@ -128,10 +137,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .login-btn:hover {
             background-color: #1e3a0f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
         }
 
         .error-message {
@@ -140,7 +156,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 1rem;
             border-radius: 4px;
             margin-bottom: 1.5rem;
-            border: 1px solid #f5c6cb;
+            border-left: 4px solid #dc3545;
+            animation: slideIn 0.3s ease;
         }
 
         .back-link {
@@ -152,10 +169,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #2d5016;
             text-decoration: none;
             font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
         .back-link a:hover {
             text-decoration: underline;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .login-container {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-group input {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .login-btn {
+                padding: 14px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .login-container {
+                padding: 1rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .login-header p {
+                font-size: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group input,
+            .login-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>

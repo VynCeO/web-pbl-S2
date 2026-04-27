@@ -130,6 +130,7 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-bg);
+            line-height: 1.6;
         }
 
         .admin-layout {
@@ -148,6 +149,12 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             height: 100vh;
             width: 250px;
             overflow-y: auto;
+            z-index: 1000;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar.mobile-open {
+            left: 0;
         }
 
         .sidebar h2 {
@@ -183,6 +190,25 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
         .main-content {
             margin-left: 250px;
             padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .menu-toggle,
+        .menu-close {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.8rem;
         }
 
         .page-header {
@@ -194,11 +220,15 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             border-radius: 8px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .page-header h1 {
             color: var(--primary-color);
             font-size: 1.5rem;
+            flex: 1;
+            min-width: 150px;
         }
 
         .btn {
@@ -210,6 +240,9 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.95rem;
+            font-family: inherit;
         }
 
         .btn-primary {
@@ -219,6 +252,8 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
 
         .btn-primary:hover {
             background-color: #1e3a0f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .btn-danger {
@@ -240,8 +275,8 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
         }
 
         .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
         }
 
         .flash-message {
@@ -291,6 +326,7 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: #333;
+            font-size: 0.95rem;
         }
 
         .form-group input,
@@ -300,7 +336,8 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             border: 1px solid #ddd;
             border-radius: 4px;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
         }
 
         .form-group input:focus,
@@ -314,10 +351,12 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .table-responsive {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -333,6 +372,7 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             padding: 0.75rem;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            font-size: 0.95rem;
         }
 
         table th {
@@ -340,36 +380,179 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
             color: var(--primary-color);
         }
 
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+
         .action-buttons {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
+        /* RESPONSIVE DESIGN */
         @media (max-width: 1024px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-
             .admin-layout {
                 grid-template-columns: 1fr;
             }
 
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 70vw;
+                left: -70vw;
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 1rem;
             }
+
+            .menu-toggle,
+            .menu-close {
+                display: block;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-card,
+            .list-card {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                width: 100%;
+            }
+
+            table th, table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .btn-sm {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80vw;
+                left: -80vw;
+            }
+
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .form-card,
+            .list-card {
+                padding: 0.75rem;
+            }
+
+            .form-card h2 {
+                font-size: 1rem;
+            }
+
+            .page-header {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.2rem;
+            }
+
+            table th, table td {
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .form-card,
+            .list-card {
+                padding: 0.6rem;
+            }
+
+            .page-header {
+                padding: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 0.6rem;
+                font-size: 16px;
+            }
+
+            table th, table td {
+                padding: 0.3rem;
+                font-size: 0.7rem;
+            }
+
+            table {
+                min-width: 400px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .btn-sm {
+                width: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
         }
     </style>
 </head>
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <button class="menu-close" onclick="toggleSidebar()">✕</button>
             <h2>Admin Panel</h2>
             <ul>
                 <li><a href="index.php">📊 Dashboard</a></li>
@@ -384,6 +567,7 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
         <!-- Main Content -->
         <div class="main-content">
             <div class="page-header">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
                 <h1>Manajemen Pimpinan</h1>
                 <a href="index.php" class="btn btn-secondary">← Kembali</a>
             </div>
@@ -505,6 +689,39 @@ $all_pimpinan = get_all_data($conn, 'pimpinan', '', 'urutan ASC');
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('mobile-open');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function() {
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar && window.innerWidth <= 1024) {
+                        sidebar.classList.remove('mobile-open');
+                    }
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                const sidebar = document.getElementById('sidebar');
+                const menuToggle = document.querySelector('.menu-toggle');
+                if (sidebar && menuToggle && !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar && window.innerWidth > 1024) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            });
+        });
     </script>
 </body>
 </html>

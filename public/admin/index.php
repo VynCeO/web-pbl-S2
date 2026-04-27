@@ -59,6 +59,12 @@ $flash = get_flash();
             height: 100vh;
             width: 250px;
             overflow-y: auto;
+            z-index: 1000;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar.mobile-open {
+            left: 0;
         }
 
         .sidebar h2 {
@@ -94,6 +100,29 @@ $flash = get_flash();
         .main-content {
             margin-left: 250px;
             padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-close {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
         }
 
         .top-bar {
@@ -105,27 +134,38 @@ $flash = get_flash();
             border-radius: 8px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .top-bar h1 {
             font-size: 1.5rem;
             color: var(--primary-color);
+            flex: 1;
+            min-width: 150px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .user-name {
             text-align: right;
+            min-width: 150px;
         }
 
         .user-name p {
             margin: 0;
             font-size: 0.9rem;
             color: #666;
+        }
+
+        .user-name strong {
+            display: block;
+            font-size: 0.95rem;
         }
 
         .logout-btn {
@@ -137,6 +177,8 @@ $flash = get_flash();
             cursor: pointer;
             text-decoration: none;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.95rem;
         }
 
         .logout-btn:hover {
@@ -145,7 +187,7 @@ $flash = get_flash();
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -156,19 +198,27 @@ $flash = get_flash();
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border-top: 4px solid var(--secondary-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .stat-card h3 {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-card .number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary-color);
             font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
         .stat-card a {
@@ -177,6 +227,7 @@ $flash = get_flash();
             color: var(--primary-color);
             text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .stat-card a:hover {
@@ -230,19 +281,22 @@ $flash = get_flash();
             padding: 0.75rem;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            font-size: 0.95rem;
         }
 
         table th {
             font-weight: 600;
             color: var(--primary-color);
+            background-color: var(--light-bg);
         }
 
         .status-badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .status-pending {
@@ -265,34 +319,276 @@ $flash = get_flash();
             color: #721c24;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile Styles */
+        @media (max-width: 1024px) {
             .admin-container {
                 grid-template-columns: 1fr;
             }
 
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 70vw;
+                left: -70vw;
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .menu-close {
+                display: block;
             }
 
             .dashboard-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card h3 {
+                font-size: 0.8rem;
+            }
+
+            .stat-card .number {
+                font-size: 1.8rem;
             }
 
             .top-bar {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .top-bar h1 {
+                font-size: 1.3rem;
+                width: 100%;
             }
 
             .user-info {
                 width: 100%;
                 justify-content: space-between;
+            }
+
+            .user-name {
+                text-align: left;
+                min-width: auto;
+            }
+
+            .logout-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .recent-section {
+                padding: 1rem;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                font-size: 0.9rem;
+                min-width: 500px;
+            }
+
+            table th, table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .sidebar li {
+                margin-bottom: 0.25rem;
+            }
+
+            .sidebar a {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80vw;
+                left: -80vw;
+            }
+
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .top-bar {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .top-bar h1 {
+                font-size: 1.1rem;
+            }
+
+            .dashboard-grid {
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-card h3 {
+                font-size: 0.75rem;
+            }
+
+            .stat-card .number {
+                font-size: 1.5rem;
+            }
+
+            .stat-card a {
+                font-size: 0.8rem;
+            }
+
+            .recent-section {
+                padding: 0.75rem;
+            }
+
+            .recent-section h2 {
+                font-size: 1.1rem;
+            }
+
+            table th, table td {
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .status-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+            .user-name p,
+            .user-name strong {
+                font-size: 0.85rem;
+            }
+
+            .logout-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+
+            .admin-container {
+                min-height: auto;
+            }
+
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .top-bar {
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .top-bar h1 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .user-name {
+                width: 100%;
+                text-align: left;
+            }
+
+            .logout-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.6rem;
+            }
+
+            .stat-card h3 {
+                font-size: 0.7rem;
+            }
+
+            .stat-card .number {
+                font-size: 1.3rem;
+            }
+
+            .stat-card a {
+                font-size: 0.75rem;
+                margin-top: 0.5rem;
+            }
+
+            .recent-section {
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            .recent-section h2 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            table {
+                font-size: 0.8rem;
+                min-width: 100%;
+            }
+
+            table th, table td {
+                padding: 0.3rem;
+                font-size: 0.7rem;
+            }
+
+            .status-badge {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.65rem;
+            }
+
+            .sidebar h2 {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            .sidebar a {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            .menu-close {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -300,7 +596,8 @@ $flash = get_flash();
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <button class="menu-close" onclick="toggleSidebar()">✕</button>
             <h2>Admin Panel</h2>
             <ul>
                 <li><a href="index.php" class="active">📊 Dashboard</a></li>
@@ -308,7 +605,7 @@ $flash = get_flash();
                 <li><a href="manage_unit.php">🏢 Unit Usaha</a></li>
                 <li><a href="manage_reservasi.php">📅 Reservasi</a></li>
                 <li><a href="manage_kontak.php">📞 Kontak</a></li>
-                <li><a href="laporan_keuangan_v2.php">💰 Laporan Keuangan v2</a></li>
+                <li><a href="laporan_keuangan.php">💰 Laporan Keuangan</a></li>
                 <li style="margin-top: 2rem;"><a href="logout.php">🚪 Logout</a></li>
             </ul>
         </div>
@@ -317,6 +614,7 @@ $flash = get_flash();
         <div class="main-content">
             <!-- Top Bar -->
             <div class="top-bar">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
                 <h1>Dashboard</h1>
                 <div class="user-info">
                     <div class="user-name">
@@ -411,5 +709,31 @@ $flash = get_flash();
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        // Close sidebar when clicking on a link
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                if (window.innerWidth <= 1024) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (sidebar && !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('mobile-open');
+            }
+        });
+    </script>
 </body>
 </html>
